@@ -1,0 +1,67 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: dev
+  labels:
+    canAccessDevNamespace: "true"
+spec:
+  finalizers:
+  - kubernetes
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: prod
+  labels:
+    canAccessProdNamespace: "true"
+spec:
+  finalizers:
+  - kubernetes
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: default
+  labels:
+    canAccessDevNamespace: "true"
+    canAccessProdNamespace: "true"
+spec:
+  finalizers:
+  - kubernetes
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: namespace-firewall
+  namespace: dev
+spec:
+  podSelector: {}
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          canAccessDevNamespace: "true"
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: namespace-firewall
+  namespace: prod
+spec:
+  podSelector: {}
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          canAccessProdNamespace: "true"
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: nats
+  labels:
+    canAccessNatsNamespace: "true"
+spec:
+  finalizers:
+  - kubernetes
+---

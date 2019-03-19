@@ -1,0 +1,28 @@
+apiVersion: extensions/v1beta1
+kind: NetworkPolicy
+metadata:
+  labels:
+    app: redis
+    chart: redis-6.1.3
+    heritage: Tiller
+    release: redis-prod
+  name: redis-prod
+  namespace: redis
+spec:
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          canAccessProdNamespace: "true"
+    - namespaceSelector:
+        matchLabels:
+          canAccessRedisNamespace: "true"
+    ports:
+    - port: 6379
+      protocol: TCP
+  podSelector:
+    matchLabels:
+      app: redis
+      release: redis-prod
+  policyTypes:
+  - Ingress

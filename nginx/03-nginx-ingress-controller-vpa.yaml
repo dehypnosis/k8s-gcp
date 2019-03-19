@@ -1,0 +1,19 @@
+# ref: https://cloud.google.com/kubernetes-engine/docs/how-to/vertical-pod-autoscaling?hl=ko#updating_resource_requests_automatically
+apiVersion: autoscaling.k8s.io/v1beta2
+kind: VerticalPodAutoscaler
+metadata:
+  name: default-nginx-ingress-controller
+  namespace: nginx
+  labels:
+    app: nginx-ingress
+    chart: nginx-ingress-1.3.1
+    component: vpa
+    heritage: Tiller
+    release: default
+spec:
+  selector:
+    matchLabels:
+      app: nginx-ingress
+      component: controller
+  updatePolicy:
+    updateMode: "Auto"

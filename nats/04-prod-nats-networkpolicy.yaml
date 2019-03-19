@@ -1,0 +1,34 @@
+apiVersion: extensions/v1beta1
+kind: NetworkPolicy
+metadata:
+  labels:
+    app: nats
+    chart: nats-0.0.7
+    heritage: Tiller
+    release: nats-prod
+  name: nats-prod-nats
+  namespace: nats
+spec:
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          canAccessProdNamespace: "true"
+    - namespaceSelector:
+        matchLabels:
+          canAccessNatsNamespace: "true"
+    ports:
+    - port: 4222
+      protocol: TCP
+  - ports:
+    - port: 6222
+      protocol: TCP
+  - ports:
+    - port: 8222
+      protocol: TCP
+  podSelector:
+    matchLabels:
+      app: nats
+      release: nats-prod
+  policyTypes:
+  - Ingress
